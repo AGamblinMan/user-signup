@@ -133,16 +133,28 @@ class MainHandler(webapp2.RequestHandler):
             error_messages['email_error']='Please enter a valid email'
 
         if error_messages:
-            self.write_form(username=escape(user_username),
-                            email=escape(user_email),
+            self.write_form(username=escape(user_username, quote=True),
+                            email=escape(user_email, quote=True),
                             username_error=error_messages.get('username_error',""),
                             password_error=error_messages.get('password_error',""),
                             verify_error=error_messages.get('verify_error',""),
                             email_error=error_messages.get('email_error',""))
         else:
-            self.write_form()
+            self.redirect('/thanks?username=%(username)s'
+                          %{'username':escape(user_username, quote=True)})
+
+class ThanksHandler(webapp2.RequestHandler):
+    def get(self):
+        username = self.request.get('username')
+        if valid_username(username):
+            self.response.out.write(html_header +
+                                '<h1>Welcome, %(username)s!!!</h1>'%{'username':username}
+                                + html_footer)
+        else:
+            self.redirect('/')
 
 
 app = webapp2.WSGIApplication([
-    ('/', MainHandler)
+    ('/', MainHandler),
+    ('/thanks', ThanksHandler)
 ], debug=True)
