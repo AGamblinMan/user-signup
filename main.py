@@ -15,10 +15,77 @@
 # limitations under the License.
 #
 import webapp2
+import re
+from cgi import escape
 
+html_header = """
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>user-signup</title>
+        <style>
+            .error{
+            color:red
+            }
+        </style>
+    </head>
+    <body>
+"""
+html_footer = """
+    </body>
+</html>
+"""
 class MainHandler(webapp2.RequestHandler):
     def get(self):
-        self.response.write('Hello world!')
+        form = """
+        <h1>Signup</h1>
+        <form method="post">
+            <table>
+                <tr>
+                    <td>
+                        <label>Username:</label>
+                    </td>
+                    <td>
+                        <input name="username" type="text"/>
+                        <span class="error"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Password:</label>
+                    </td>
+                    <td>
+                        <input name="password" type="password"/>
+                        <span class="error"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Verify Password:</label>
+                    </td>
+                    <td>
+                        <input name="verify" type="password"/>
+                        <span class="error"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Email (optional):</label>
+                    </td>
+                    <td>
+                        <input name="email" type="text"/>
+                        <span class="error"></span>
+                    </td>
+                </tr>
+            </table>
+            <input type="submit" value="Sign Up"/>
+        </form>
+        """
+
+
+
+
+        self.response.write(html_header + form + html_footer)
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler)
